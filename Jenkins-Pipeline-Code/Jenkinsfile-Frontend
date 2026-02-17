@@ -3,13 +3,16 @@ pipeline {
     tools {
         nodejs 'nodejs'
     }
+
     environment  {
         AWS_ACCOUNT_ID = credentials('account-id')
         AWS_ECR_REPO_NAME = credentials('ecr-repo-name')
         AWS_DEFAULT_REGION = 'us-east-1'
         REGISTRY_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
     }
+    
     stages {
+
         stage('Cleaning Workspace') {
             steps {
                 cleanWs()
@@ -21,14 +24,6 @@ pipeline {
             }
         }
         
-        
-        stage('Trivy File Scan') {
-            steps {
-                dir('Application-Code/frontend') {
-                    sh 'trivy fs . > trivyfs.txt'
-                }
-            }
-        }
         stage("Docker Image Build") {
             steps {
                 script {
@@ -40,6 +35,7 @@ pipeline {
                 }
             }
         }
+
         stage("ECR Image Pushing") {
             steps {
                 script {
@@ -49,10 +45,6 @@ pipeline {
                 }
             }
         }
-        stage("TRIVY Image Scan") {
-            steps {
-                sh 'trivy image ${REGISTRY_URI}${AWS_ECR_REPO_NAME}:${BUILD_NUMBER} > trivyimage.txt' 
-            }
-        }
+        
     }  
 }      
