@@ -1,6 +1,7 @@
 pipeline {
     agent { label 'jenkins-agent'}
     tools {
+        jdk 'jdk17'
         nodejs 'nodejs'
     }
 
@@ -10,7 +11,7 @@ pipeline {
         AWS_DEFAULT_REGION = 'us-east-1'
         REGISTRY_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
     }
-    
+
     stages {
 
         stage('Cleaning Workspace') {
